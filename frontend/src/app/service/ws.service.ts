@@ -7,27 +7,31 @@ import { Subject } from 'rxjs';
 export class WsService {
   socket!: WebSocket | null;
   ws_url = 'ws://localhost:8080';
-  private ws;
+  private ws: any;
   public messages$: Subject<any> = new Subject<any>();
 
-  constructor() {
+  constructor() {}
+
+  createConnection() {
     this.ws = new WebSocket(this.ws_url);
 
     this.ws.onopen = () => {
       this.socket = this.ws;
       console.log('Connected to the backend');
-      this.ws.onmessage = (event) => {
-        this.messages$.next(JSON.parse(event.data));
-      };
     };
 
     this.ws.onclose = () => {
       this.socket = null;
       console.log('Connection closed');
     };
+
+    this.ws.onmessage = (event: any) => {
+      console.log('Received : ' + event);
+      this.messages$.next(JSON.parse(event.data));
+    };
   }
 
   sendMessage(msg: any) {
-    this.socket?.send(JSON.stringify(msg));
+    this.socket?.send(JSON.stringify( msg ));
   }
 }

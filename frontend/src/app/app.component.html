@@ -2,7 +2,11 @@
   <div class="max-w-screen-lg w-full">
     <div class="grid grid-cols-6 gap-4 w-full h-full p-8">
       <div class="col-span-5">
-        <app-board class="w-full h-full shadow-zinc-100 rounded"></app-board>
+        <app-board
+          class="w-full h-full shadow-zinc-100 rounded"
+          [chess]="chess"
+          [board]="board"
+        ></app-board>
       </div>
       <div class="bg-slate-900 w-full flex justify-center items-center">
         <button

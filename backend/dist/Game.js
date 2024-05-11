@@ -9,7 +9,6 @@ class Game {
         this.player1 = player1;
         this.player2 = player2;
         this.board = new chess_js_1.Chess();
-        this.startTime = new Date();
         this.player1.send(JSON.stringify({
             type: messages_1.INIT_GAME,
             payload: {
@@ -24,51 +23,27 @@ class Game {
         }));
     }
     makeMove(socket, move) {
-        //validation
-        //is it this users move
-        // is this move valid
-        if (this.moveCount % 2 === 0 && socket != this.player1)
-            return;
-        if (this.moveCount % 2 === 0 && socket != this.player2)
+        if (socket != this.player1 && socket != this.player2)
             return;
         try {
+            console.log(move);
             this.board.move(move);
         }
         catch (e) {
-            console.log(e);
+            console.error("Invalid move:", e);
             return;
         }
+        console.log("herr::", move, socket);
         if (this.board.isGameOver()) {
-            this.player1.emit(JSON.stringify({
-                type: messages_1.GAME_OVER,
-                payload: {
-                    winner: this.board.turn() === "w" ? "black" : "white",
-                },
-            }));
-            this.player2.emit(JSON.stringify({
-                type: messages_1.GAME_OVER,
-                payload: {
-                    winner: this.board.turn() === "w" ? "black" : "white",
-                },
-            }));
+            const winner = this.board.turn() === "w" ? "black" : "white";
+            this.player1.send(JSON.stringify({ type: messages_1.GAME_OVER, payload: { winner } }));
+            this.player2.send(JSON.stringify({ type: messages_1.GAME_OVER, payload: { winner } }));
             return;
         }
-        //update the board
-        //push the move
-        // check if game is over
-        // send the updated board to both user
-        if (this.moveCount % 2 === 0) {
-            this.player2.send(JSON.stringify({
-                type: messages_1.MOVE,
-                payload: move,
-            }));
-        }
-        else {
-            this.player2.send(JSON.stringify({
-                type: messages_1.MOVE,
-                payload: move,
-            }));
-        }
+        this.moveCount++;
+        console.log(this.moveCount);
+        const nextPlayer = socket === this.player1 ? this.player2 : this.player1;
+        nextPlayer.send(JSON.stringify({ type: messages_1.MOVE, payload: move }));
     }
 }
 exports.Game = Game;
