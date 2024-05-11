@@ -3,6 +3,7 @@
       *ngFor="let col of row; let j = index"
       class="h-16 w-16"
       [ngClass]="(i + j) % 2 === 0 ? 'bg-green-500' : 'bg-slate-500'"
+      (click)="handleClick(i,j)"
     >
       <div class="w-full justify-center flex h-full">
         <div class="h-full justify-center flex flex-col">
