@@ -1,0 +1,22 @@
+<div *ngFor="let row of chess.board(); let i = index" class="flex">
+    <div
+      *ngFor="let col of row; let j = index"
+      class="h-16 w-16"
+      [ngClass]="(i + j) % 2 === 0 ? 'bg-green-500' : 'bg-slate-500'"
+    >
+      <div class="w-full justify-center flex h-full">
+        <div class="h-full justify-center flex flex-col">
+          <img
+            class="w-4"
+            *ngIf="col"
+            [src]="
+              col.color === 'w'
+                ? '../assets/' + col.type.toUpperCase() + ' copy.png'
+                : '../assets/' + col.type + '.png'
+            "
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  
